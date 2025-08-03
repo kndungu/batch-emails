@@ -10,24 +10,24 @@ export const buildBatches = (samples) => {
   // Number of batches needed is the max count for any email
   const batchCount = Math.max(...Object.values(emailCounts));
   const batches = Array.from({ length: batchCount }, () => []);
-  // Track emails present in each batch
-  const batchEmailSets = Array.from({ length: batchCount }, () => new Set());
 
-  // Track next batch index for each email
-  const emailNextBatch = {};
+  // Track how many times we've seen each email
+  const emailSeen = {};
+  // Track next batch for unique emails (for round-robin)
+  let uniqueBatchPointer = 0;
 
   for (const sample of samples) {
-    // Find the next batch index for this email
-    let idx = emailNextBatch[sample.email] || 0;
-
-    // Find a batch that doesn't have this email
-    while (batchEmailSets[idx].has(sample.email)) {
-      idx = (idx + 1) % batchCount;
+    if (emailCounts[sample.email] === 1) {
+      // Unique email: assign in round-robin
+      batches[uniqueBatchPointer].push(sample);
+      uniqueBatchPointer = (uniqueBatchPointer + 1) % batchCount;
+    } else {
+      // Duplicate email: assign to batch based on occurrence
+      const seen = emailSeen[sample.email] || 0;
+      const batchIdx = seen % batchCount;
+      batches[batchIdx].push(sample);
+      emailSeen[sample.email] = seen + 1;
     }
-
-    batches[idx].push(sample);
-    batchEmailSets[idx].add(sample.email);
-    emailNextBatch[sample.email] = (idx + 1) % batchCount;
   }
 
   return batches;
