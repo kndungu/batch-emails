@@ -1,33 +1,30 @@
-// import samples.json
-import samples from './samples.js';
-
 class Queue {
   constructor(maxIndex) {
-    const indexes = [];
+    const indexes = []
     
     for (let i = 0; i <= maxIndex; i++) {
-      indexes.push(i);
+      indexes.push(i)
     }
 
-    this.items = indexes;
+    this.items = indexes
   }
 
   enqueue(item) {
-    this.items.push(item);
+    this.items.push(item)
   }
 
   dequeue() {
-    return this.items.shift();
+    return this.items.shift()
   }
 
   peek() {
-    return this.items[0];
+    return this.items[0]
   }
 
   rotate() {
-    const item = this.dequeue();
+    const item = this.dequeue()
 
-    this.enqueue(item);
+    this.enqueue(item)
   }
 }
 

@@ -1,4 +1,3 @@
-// import samples.json
 export const buildBatches = (samples) => {
   const map = {}
 

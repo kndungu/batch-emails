@@ -55,21 +55,32 @@ function runTests(buildBatches, label) {
   result = buildBatches(emptySamples);
   assert.deepEqual(result, [], `[${label}] Empty input should return empty array`);
 
-  // 5. Large batch with 10 duplicates and 40 unique
+  // 5. Large batch with configurable duplicates and unique
+  const NUM_UNIQUE = 100000;
+  const NUM_DUPES = 10000;
+  const DUPE_EMAIL = 'dupe@x.com';
+
   const largeSamples = [
-    ...Array.from({ length: 40 }, (_, i) => ({
+    ...Array.from({ length: NUM_UNIQUE }, (_, i) => ({
       email: `unique${i}@x.com`,
       title: `Title ${i}`,
       message: `Message ${i}`
     })),
-    ...Array.from({ length: 10 }, (_, i) => ({
-      email: 'dupe@x.com',
+    ...Array.from({ length: NUM_DUPES }, (_, i) => ({
+      email: DUPE_EMAIL,
       title: `Dupe Title ${i}`,
       message: `Dupe Message ${i}`
     }))
   ];
+
+  // Timing for largeSamples
+  const start = process.hrtime.bigint();
   result = buildBatches(largeSamples);
-  assert.equal(result.length, 10, `[${label}] Should be 10 batches for max duplicate count`);
+  const end = process.hrtime.bigint();
+  const durationMs = Number(end - start) / 1e6;
+  console.log(`[${label}] buildBatches(largeSamples) took ${durationMs.toFixed(2)} ms`);
+
+  assert.equal(result.length, NUM_DUPES, `[${label}] Should be ${NUM_DUPES} batches for max duplicate count`);
   result.forEach(batch => {
     assert.equal(batch.length, uniqueEmails(batch), `[${label}] No duplicate emails in batch`);
   });
@@ -106,4 +117,4 @@ runTests(buildBatchesV1, 'V1');
 runTests(buildBatchesV2, 'V2');
 runTests(buildBatchesV3, 'V3');
 
-console.log('All buildBatches tests passed for both versions.');
+console.log('All buildBatches tests passed for all versions.');
