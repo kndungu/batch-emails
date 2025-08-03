@@ -1,7 +1,5 @@
 // import samples.json
-import samples from './samples.js';
-
-const buildBatches = () => {
+export const buildBatches = (samples) => {
   const map = {}
 
   for (const sample of samples) {
@@ -21,4 +19,3 @@ const buildBatches = () => {
   return batches
 }
 
-console.log(buildBatches(samples).map(batch => batch.length));

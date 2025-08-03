@@ -31,7 +31,7 @@ class Queue {
   }
 }
 
-const buildBatches = (samples) => {
+export const buildBatches = (samples) => {
     const map = {}
 
     for (const sample of samples) {
@@ -65,5 +65,3 @@ const buildBatches = (samples) => {
 
     return batches;
 }
-
-console.log(buildBatches(samples).map(batch => batch.length))
